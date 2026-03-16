@@ -59,3 +59,52 @@ characterizationModuleSpecifications <- cModule$createModuleSpecifications(
 	includeAggregateCovariate = TRUE            # TRUE: Run the aggregate covariate 
 )
 ```
+### Population Estimation
+
+```
+cmAnalysisList <- list(
+  CohortMethod::createCmAnalysis(
+      analysisId = 1,                           # default: 1
+      description = "pneumonia vs pneumonia plus cardiovascular disease for ventilator support", 
+      getDbCohortMethodDataArgs = CohortMethod::createGetDbCohortMethodDataArgs(
+      
+      removeDuplicateSubjects = "keep all",     # "keep all": count all encounters
+      firstExposureOnly = FALSE,                # FALSE: not only first exposure
+      washoutPeriod = 7,                        # 7: At least have 7 days before index date without diagnosis
+      studyStartDate = "",                      # "": do not specify
+      studyEndDate = "",                        # "": do not specify
+      restrictToCommonPeriod = FALSE,           # FALSE: only one treatment
+      maxCohortSize = 0,                        # 0: no maximum size
+      covariateSettings = FeatureExtraction::createDefaultCovariateSettings()
+    ),
+    createStudyPopArgs = CohortMethod::createCreateStudyPopulationArgs(
+      removeSubjectsWithPriorOutcome = FALSE,  # include subject with prior outcome
+      priorOutcomeLookback = 99999,          # 99999: no upper limit
+      minDaysAtRisk = 1,                     # 1: minimum 1 day at risk
+      maxDaysAtRisk = 99999,                 # 99999: no upper limit
+      riskWindowStart = 0,                   # 0: starts from day 0
+      startAnchor = "cohort start",          # default: "cohort start"  
+      riskWindowEnd = 0,                     # 0: ends with anchor
+      endAnchor = "cohort end",              # default: "cohort end"
+      censorAtNewRiskWindow = FALSE          # FALSE: no overlap possible
+    ),
+    createPsArgs = CohortMethod::createCreatePsArgs(
+      maxCohortSizeForFitting = 250000,        # 250000: not likely to exceed
+      errorOnHighCorrelation = TRUE,           # TRUE: throw an error when covariates have high correlation
+      stopOnError = TRUE                       # TRUE: stop on error
+    ),
+    stratifyByPsArgs = CohortMethod::createStratifyByPsArgs(
+      numberOfStrata = 5,                      #  5: use strata for propensity score matching
+      stratificationColumns = c(),             #  c()
+      baseSelection = "all"                    # "all"
+    ),
+    fitOutcomeModelArgs = CohortMethod::createFitOutcomeModelArgs(
+      modelType = "logistic",                  # "logistic": use logistic regression
+      stratified = TRUE,                       # TRUE: Stratified propensity score matching
+      useCovariates = FALSE,                   # FALSE: Do not use covariates
+      inversePtWeighting = FALSE,              # FALSE
+    )
+  )
+)
+
+```
