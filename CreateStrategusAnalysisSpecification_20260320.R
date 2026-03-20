@@ -339,7 +339,7 @@ analysisSpecifications <- createEmptyAnalysisSpecifications() |>
 
 ParallelLogger::saveSettingsToJson(
 	object = analysisSpecifications,
-	fileName = "inst/settings/PneumoniaSpecsYLiu_20260320.json"
+	fileName = "inst/settings/PneumoniaSpecsYLiu.json"
 )
 
-message("Analysis specification saved to: inst/settings/PneumoniaSpecsYLiu_20260320.json")
+message("Analysis specification saved to: inst/settings/PneumoniaSpecsYLiu.json")
